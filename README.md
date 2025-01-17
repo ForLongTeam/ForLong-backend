@@ -1,6 +1,9 @@
 # BackEndDev
 백앤드 개발
 
+## gitflow 전략 사용
+![image](https://github.com/user-attachments/assets/c4013333-66a3-4870-a42c-79c993a6c703)
+
 
 
 ## main 브랜치 :
