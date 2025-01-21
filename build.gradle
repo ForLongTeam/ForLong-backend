@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.springframework.boot' version '3.4.1' // 스프링 부트 플러그인
+	id 'io.spring.dependency-management' version '1.1.7' // 스프링 의존성 관리 플러그인
 }
 
 group = 'DevBackEnd'
@@ -9,33 +9,35 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(17) // 자바 17 버전 사용
 	}
 }
 
 configurations {
 	compileOnly {
-		extendsFrom annotationProcessor
+		extendsFrom annotationProcessor // 어노테이션 프로세서 확장
 	}
 }
 
 repositories {
-	mavenCentral()
+	mavenCentral() // 메이븐 중앙 저장소 사용
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 사용
+	implementation 'org.springframework.boot:spring-boot-starter-security' // 스프링 시큐리티 사용
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 타임리프 사용
+	implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 애플리케이션 개발
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // 웹소켓 사용
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // 타임리프와 스프링 시큐리티 통합
+	compileOnly 'org.projectlombok:lombok' // 롬복 사용
+	annotationProcessor 'org.projectlombok:lombok' // 롬복 어노테이션 프로세서
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' // 테스트용 스프링 부트 스타터
+	testImplementation 'org.springframework.security:spring-security-test' // 스프링 시큐리티 테스트
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb' // MongoDB 사용
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform() // JUnit 플랫폼 사용
 }
