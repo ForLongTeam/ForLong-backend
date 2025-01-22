@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 애플리케이션 개발
 	implementation 'org.springframework.boot:spring-boot-starter-websocket' // 웹소켓 사용
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // 타임리프와 스프링 시큐리티 통합
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2' // Swagger 의존성
 	compileOnly 'org.projectlombok:lombok' // 롬복 사용
 	annotationProcessor 'org.projectlombok:lombok' // 롬복 어노테이션 프로세서
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // 테스트용 스프링 부트 스타터
