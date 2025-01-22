@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 사용
+	implementation 'mysql:mysql-connector-java:8.0.33'  // MySQL 사용
 	implementation 'org.springframework.boot:spring-boot-starter-security' // 스프링 시큐리티 사용
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 타임리프 사용
 	implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 애플리케이션 개발
@@ -36,7 +37,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // 테스트용 스프링 부트 스타터
 	testImplementation 'org.springframework.security:spring-security-test' // 스프링 시큐리티 테스트
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb' // MongoDB 사용
+//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb' // MongoDB 사용
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
