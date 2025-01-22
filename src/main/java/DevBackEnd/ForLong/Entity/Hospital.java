@@ -32,7 +32,7 @@ public class Hospital {
     private LocalDateTime time;
 
     @Column(columnDefinition = "TEXT")
-    private String explain;
+    private String explainHospital;
 
     @Column
     private LocalDateTime breaktime;
@@ -44,11 +44,25 @@ public class Hospital {
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "hospital_id")
     private List<Vet> vets = new ArrayList<>();
+
+    public void addVet(Vet vet) {
+        vets.add(vet);
+    }
+
+    public void removeVet(Vet vet) {
+        vets.remove(vet);
+    }
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
         reservation.setHospital(this);
+    }
+
+    public void removeReservation(Reservation reservation) {
+        reservations.remove(reservation);
+        reservation.setHospital(null);
     }
 }
