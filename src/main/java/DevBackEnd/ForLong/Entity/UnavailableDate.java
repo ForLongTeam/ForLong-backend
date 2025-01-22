@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class NotDate {
+public class UnavailableDate {
 
     @Id
     @GeneratedValue

@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,7 +19,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String join_id;
 
     @Column
@@ -44,12 +46,15 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
 
+    /**
+     * 중복 예약이 되면 안됨.
+     * */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations = new ArrayList<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "location_id")
-    private Location location;
+    private UserLocation userLocation;
 
     public void addPost(Post post) {
         posts.add(post);

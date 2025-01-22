@@ -25,6 +25,7 @@ public class Hospital {
     private String hospital_phone;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private HospitalStatus hospitalStatus;
 
     @Column

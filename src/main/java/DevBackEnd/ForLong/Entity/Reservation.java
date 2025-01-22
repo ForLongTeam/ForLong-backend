@@ -20,6 +20,7 @@ public class Reservation {
     private LocalDateTime reservation_date;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
     @Column
@@ -32,5 +33,12 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
+
+    /**
+     *  예약 상태 변경 메서드
+     * */
+    public void changeStatus(ReservationStatus newStatus) {
+        this.status = newStatus;
+    }
 
 }

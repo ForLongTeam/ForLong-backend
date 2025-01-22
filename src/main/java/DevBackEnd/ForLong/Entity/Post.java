@@ -19,10 +19,10 @@ public class Post {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)

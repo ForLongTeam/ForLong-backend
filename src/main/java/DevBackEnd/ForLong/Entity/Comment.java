@@ -17,13 +17,13 @@ public class Comment {
     @GeneratedValue
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime createAt;
 
-    @Column
+    @Column(nullable = false)
     private String createBy;
 
     @ManyToOne
