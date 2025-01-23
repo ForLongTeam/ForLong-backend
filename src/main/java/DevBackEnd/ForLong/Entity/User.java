@@ -1,8 +1,11 @@
 package DevBackEnd.ForLong.Entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,26 +22,27 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String join_id;
+    @Column(name = "join_id", nullable = false, unique = true)
+    private String joinId;
 
-    @Column
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private String nickname;
 
-    @Column
+    // 이메일은 선택입력
     private String email;
 
-    @Column
     private String phone;
 
     @Column
     private String provider;
 
     @Column
-    private String provider_id;
+    private String providerId;
+
+    @Column
+    private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
