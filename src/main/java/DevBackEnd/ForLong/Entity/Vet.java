@@ -14,7 +14,7 @@ public class Vet {
 
     @Id
     @Column(name = "vet_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column

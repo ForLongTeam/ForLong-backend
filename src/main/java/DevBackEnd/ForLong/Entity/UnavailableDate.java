@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class UnavailableDate {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
