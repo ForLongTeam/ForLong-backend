@@ -4,6 +4,7 @@ import DevBackEnd.ForLong.Converter.JoinConverter;
 import DevBackEnd.ForLong.Dto.JoinDTO;
 import DevBackEnd.ForLong.Entity.User;
 import DevBackEnd.ForLong.Repository.UserRepository;
+import DevBackEnd.ForLong.Util.HashUtil;
 import DevBackEnd.ForLong.Util.PasswordUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,13 @@ public class JoinService {
         }
         joinDTO.setPassword(passwordUtil.encodePassword(joinDTO.getPassword()));
 
+        if(joinDTO.getPhone() != null){
+            log.info("휴대폰 해시화 시작");
+            String phone = phoneNumCleaner(joinDTO.getPhone());
+            joinDTO.setPhone(HashUtil.hashPhoneNum(phone));
+            log.info("휴대폰 해시화 성공");
+        }
+
         try{
             if (joinDTO.getRole() == null) {
                 log.info("회원 역할 저장 시작");
@@ -43,11 +51,10 @@ public class JoinService {
             throw e;
         }
 
-
         User user = JoinConverter.toEntity(joinDTO);
 
-        log.info("회원 정보 저장 시작 : {}", user.toString());
         try{
+            log.info("회원 정보 저장 시작 : {}", user.toString());
             userRepository.save(user);
         } catch (Exception e){
             log.error("회원 정보 저장 중 오류 발생 : {}", e.getMessage(), e);
@@ -56,5 +63,10 @@ public class JoinService {
         log.info("회원 정보 저장 완료 : {}", user);
 
         return userRepository.findByJoinId(joinDTO.getUserId());
+    }
+
+    public String phoneNumCleaner(String phone){
+        String cleanPhone = phone.replaceAll("-", "");
+        return cleanPhone;
     }
 }
