@@ -15,7 +15,7 @@ public class Hospital {
 
     @Id
     @Column(name = "hospital_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
