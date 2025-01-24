@@ -25,10 +25,10 @@ public class JoinService {
 
     @Transactional
     public User saveUser(JoinDTO joinDTO){
-        String joinId = joinDTO.getUserId();
+        String loginId = joinDTO.getLoginId();
 
-        if(userRepository.existsByJoinId(joinId)){
-           log.info("중복된 userId : {}", joinId);
+        if(userRepository.existsByLoginId(loginId)){
+           log.info("중복된 userId : {}", loginId);
            throw new IllegalArgumentException("중복된 아이디가 있습니다.");
         }
         joinDTO.setPassword(passwordUtil.encodePassword(joinDTO.getPassword()));
@@ -62,7 +62,7 @@ public class JoinService {
         }
         log.info("회원 정보 저장 완료 : {}", user);
 
-        return userRepository.findByJoinId(joinDTO.getUserId());
+        return userRepository.findByLoginId(joinDTO.getLoginId());
     }
 
     public String phoneNumCleaner(String phone){
