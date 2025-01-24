@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class JoinDTO {
 
-    private String loginId;
+    private String login_id;
     private String password;
     private String nickname;
     private String email;
@@ -16,7 +16,7 @@ public class JoinDTO {
 
     public JoinDTO(String loginId, String password, String nickname,
                    String email, String phone, String role){
-        this.loginId = loginId;
+        this.login_id = loginId;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
