@@ -1,6 +1,7 @@
 package DevBackEnd.ForLong.Dto;
 
 import DevBackEnd.ForLong.Entity.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 // 스프링 시큐리티와의 통합을 위함
 public class CustomUserDetail implements UserDetails, OAuth2User {
 
+    @Getter
     private final User user;
     private Map<String, Object> attributes;
 
@@ -35,7 +37,7 @@ public class CustomUserDetail implements UserDetails, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return attributes != null ? Collections.unmodifiableMap(attributes) : Collections.emptyMap();
     }
 
     @Override

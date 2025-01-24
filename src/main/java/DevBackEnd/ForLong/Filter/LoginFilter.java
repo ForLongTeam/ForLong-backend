@@ -8,8 +8,7 @@ import DevBackEnd.ForLong.Util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
@@ -84,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             log.info("authToken = [{}]", authToken);
 
             // AuthenticationManager에 인증 요청
-            return this.authenticationManager.authenticate(authToken);
+            return authenticationManager.authenticate(authToken);
         } catch (Exception ex) {
             log.error("\"Error during authentication: \" + ex.getMessage()");
             throw ex; // 문제의 원인을 추적하기 위해 예외 재던짐
@@ -92,10 +90,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
-
+        log.info("successful authentication");
 
         String userId = authResult.getName();
 
@@ -121,14 +118,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addCookie(cookieUtil.createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
 
+        chain.doFilter(request, response);
+
     }
 
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.error("로그인 실패");
-        response.setStatus(401);
 
+        log.error("Authentication failed: " + failed.getMessage());
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Authentication failed.");
     }
 
     private void addRefreshEntity(String userId, String refresh, Long expiredMs) {
@@ -142,5 +143,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         refreshRepository.save(refreshToken);
     }
-
 }
