@@ -31,7 +31,7 @@ public class JoinController {
      * 회원가입 과정
      * */
     @Operation(summary = "회원가입 처리", description = "회원 정보를 받아 회원가입을 처리합니다." +
-            "joinId, password, email, phone, nickname 정보를 받아 회원가입을 처리하빈다." +
+            "loginId, password, email, phone, nickname 정보를 받아 회원가입을 처리하빈다." +
             "email은 선택이고 나머지는 모두 필수 입력 값입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),

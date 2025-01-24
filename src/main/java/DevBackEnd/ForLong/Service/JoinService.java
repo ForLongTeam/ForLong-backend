@@ -25,7 +25,7 @@ public class JoinService {
 
     @Transactional
     public User saveUser(JoinDTO joinDTO){
-        String loginId = joinDTO.getLoginId();
+        String loginId = joinDTO.getLogin_id();
 
         if(userRepository.existsByLoginId(loginId)){
            log.info("중복된 userId : {}", loginId);
@@ -62,7 +62,7 @@ public class JoinService {
         }
         log.info("회원 정보 저장 완료 : {}", user);
 
-        return userRepository.findByLoginId(joinDTO.getLoginId());
+        return userRepository.findByLoginId(joinDTO.getLogin_id());
     }
 
     public String phoneNumCleaner(String phone){
