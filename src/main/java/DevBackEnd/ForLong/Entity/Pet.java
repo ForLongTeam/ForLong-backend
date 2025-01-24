@@ -11,7 +11,7 @@ public class Pet {
 
     @Id
     @Column(name = "pet_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
