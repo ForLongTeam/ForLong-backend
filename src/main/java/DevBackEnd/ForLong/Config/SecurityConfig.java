@@ -84,6 +84,9 @@ public class SecurityConfig {
         /**
          * Custom FormLogin Filter And Custom Logout Filter
          * */
+        http.
+                addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
         http
                 .addFilterAt(new LoginFilter(authenticationManager(configuration), jwtUtil, cookieUtil, refreshRepository),
                         UsernamePasswordAuthenticationFilter.class);
