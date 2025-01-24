@@ -26,6 +26,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 사용
 	implementation 'mysql:mysql-connector-java:8.0.33'  // MySQL 사용
+	implementation 'org.springframework.boot:spring-boot-starter-validation' // 스프링 검증 사용
 	implementation 'org.springframework.boot:spring-boot-starter-security' // 스프링 시큐리티 사용
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 타임리프 사용
 	implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 애플리케이션 개발

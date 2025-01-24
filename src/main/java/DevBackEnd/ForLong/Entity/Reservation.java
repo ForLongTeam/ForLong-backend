@@ -13,7 +13,7 @@ public class Reservation {
 
     @Id
     @Column(name = "reservation_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
