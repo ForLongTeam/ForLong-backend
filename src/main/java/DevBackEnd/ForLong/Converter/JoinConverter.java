@@ -9,7 +9,7 @@ public class JoinConverter {
 
     public static JoinDTO toDTO(User user) {
         return new JoinDTO(
-                user.getJoinId(),
+                user.getLoginId(),
                 user.getPassword(),
                 user.getNickname(),
                 user.getEmail(),
@@ -22,7 +22,7 @@ public class JoinConverter {
         log.info("JoinDTO 변환 시작 : {}", joinDTO.toString());
         User user = new User();
 
-        user.setJoinId(joinDTO.getUserId());
+        user.setLoginId(joinDTO.getLogin_id());
         user.setPassword(joinDTO.getPassword());
         user.setNickname(joinDTO.getNickname());
         user.setEmail(joinDTO.getEmail());
