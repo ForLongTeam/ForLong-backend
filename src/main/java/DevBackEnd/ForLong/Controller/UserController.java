@@ -1,16 +1,15 @@
 package DevBackEnd.ForLong.Controller;
 
+
 import DevBackEnd.ForLong.Dto.ApiResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -18,7 +17,7 @@ public class UserController {
 
     /**
      * 실제 로그인 로직은 LoginFilter를 통해 구현됨.
-     * 이 코드는 프론트앤드 개발자를 위한 명세서를 위해 적은 코드
+     * 프론트 개발자를 위한 api 명세서를 위한 코드
      * */
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공 시 JWT 토큰 반환"),
@@ -36,6 +35,33 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * oAuth2 소셜 로그인 설명
+     * 실제로는 Filter 단에서 작동 됨.
+     * 프론트 개발자를 위한 api 명세서를 위한 코드
+     * */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "소셜 로그인 페이지로 리디렉션"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @Operation(summary = "OAuth2 소셜 로그인 (Swagger 명세 전용)",
+            description = "앤드포인트 -> /oauth2/authorization/{provider}" +
+                    "사용자가 /oauth2/authorization/{provider}로 리디렉션하면 해당 소셜 로그인 페이지로 이동합니다. 로그인 성공 시 서버는 JWT 토큰을 쿠키에 저장하고, " +
+                    "클라이언트는 이후 요청에서 해당 토큰을 활용하여 인증할 수 있습니다. 실제 요청 처리가 아닌 명세용 설명입니다." +
+                    "클라이언트가 /oauth2/authorization/naver로 접근하면 Spring Security의 OAuth2 설정에 따라 자동으로 네이버 로그인 로직이 실행됩니다. " +
+                    "그리고 로그인에 성공하면 커스텀 성공 핸들러(CustomOAuth2SuccessHandler)가 작동하여 JWT 토큰을 발급하고, 이를 클라이언트에게 쿠키로 전달" +
+                    "쿠키의 만료 시간은 1시간"
+    )
+    @GetMapping("/oauth2/authorization/{provider}")
+    public ResponseEntity<ApiResponseDTO<Void>> oauth2Login(
+            @Parameter(description = "소셜 로그인 제공자 (예: google, facebook, github)", required = true)
+            @PathVariable String provider) {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .body(new ApiResponseDTO<>("redirect", "소셜 로그인 페이지로 리디렉션", null));
+    }
+
+
 
     /**
      * 로그아웃
