@@ -1,5 +1,6 @@
-package DevBackEnd.ForLong.Dto;
+package DevBackEnd.ForLong.Service;
 
+import DevBackEnd.ForLong.Dto.CustomUserDetail;
 import DevBackEnd.ForLong.Entity.User;
 import DevBackEnd.ForLong.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,11 @@ public class CustomUserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found : " + loginId);
         }
+        if (user.getPassword() == null) {
+            return new CustomUserDetail(user,null);
+        }
         return new CustomUserDetail(user,null);
     }
+
+
 }

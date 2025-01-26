@@ -1,12 +1,11 @@
 package DevBackEnd.ForLong.Util;
 
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-@Component
+
 public class HashUtil {
     public static String hashPhoneNum(String phone){
         try{
