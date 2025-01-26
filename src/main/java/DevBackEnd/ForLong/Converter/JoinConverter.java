@@ -14,7 +14,9 @@ public class JoinConverter {
                 user.getNickname(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getRole()
+                user.getRole(),
+                user.getProviderId(),
+                user.getProvider()
         );
     }
 

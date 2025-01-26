@@ -1,13 +1,13 @@
 package DevBackEnd.ForLong.Config;
 
-import DevBackEnd.ForLong.Filter.CutomLogoutFilter;
-import DevBackEnd.ForLong.Filter.JWTFilter;
-import DevBackEnd.ForLong.Filter.LoginFilter;
+import DevBackEnd.ForLong.Filter.*;
 import DevBackEnd.ForLong.Repository.RefreshRepository;
+import DevBackEnd.ForLong.Service.CustomOauth2UserService;
 import DevBackEnd.ForLong.Util.CookieUtil;
 import DevBackEnd.ForLong.Util.JwtUtil;
 import DevBackEnd.ForLong.Util.PasswordUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +30,7 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig {
 
 
@@ -37,12 +38,18 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RefreshRepository refreshRepository;
+    private final CustomOauth2UserService customOauth2UserService;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final CustomOAuth2FailuerHandler customOAuth2FailureHandler;
 
-    public SecurityConfig(AuthenticationConfiguration configuration, JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration configuration, JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository, CustomOauth2UserService customOauth2UserService, CustomOAuth2SuccessHandler customOAuth2SuccessHandler, CustomOAuth2FailuerHandler customOAuth2FailureHandler) {
         this.configuration = configuration;
         this.jwtUtil = jwtUtil;
         this.cookieUtil = cookieUtil;
         this.refreshRepository = refreshRepository;
+        this.customOauth2UserService = customOauth2UserService;
+        this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
+        this.customOAuth2FailureHandler = customOAuth2FailureHandler;
     }
 
     @Bean
@@ -72,6 +79,22 @@ public class SecurityConfig {
          * */
         http
                 .csrf((csrf) -> csrf.disable());
+
+        /**
+         * OAuth2 로그인 로직
+         * */
+        http
+                .oauth2Login((oauth) -> oauth
+                        .userInfoEndpoint((userInfo) -> {
+                            try {
+                                userInfo.userService(customOauth2UserService);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        })
+                        .successHandler(customOAuth2SuccessHandler)
+                        .failureHandler(customOAuth2FailureHandler)
+                );
 
         /**
          * 커스텀 로그인, 로그아웃 필터 사용
