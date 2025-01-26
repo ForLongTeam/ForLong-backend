@@ -16,11 +16,10 @@ import org.springframework.stereotype.Service;
 public class JoinService {
 
     private final UserRepository userRepository;
-    private final PasswordUtil passwordUtil;
+    private final PasswordUtil passwordUtil = new PasswordUtil(new BCryptPasswordEncoder());
 
-    public JoinService(UserRepository userRepository, PasswordUtil passwordUtil) {
+    public JoinService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordUtil = passwordUtil;
     }
 
     @Transactional
