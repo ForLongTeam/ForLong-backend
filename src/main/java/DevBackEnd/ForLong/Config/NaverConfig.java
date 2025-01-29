@@ -12,7 +12,7 @@ public class NaverConfig {
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String NaverClientId;
 
-    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    @Value("${NAVER_REDIRECT}")
     private String NaverRedirectUri;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
