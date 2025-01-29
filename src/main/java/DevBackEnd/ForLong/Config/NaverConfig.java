@@ -1,11 +1,14 @@
 package DevBackEnd.ForLong.Config;
 
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Getter
+@Slf4j
 @Component(value = "naverApi")
 public class NaverConfig {
 
@@ -17,4 +20,9 @@ public class NaverConfig {
 
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String NaverClientSecret;
+
+    @PostConstruct
+    public void logRedirectUri() {
+        log.info("▶▶▶ NAVER_REDIRECT 적용 확인: {}", NaverRedirectUri);
+    }
 }
