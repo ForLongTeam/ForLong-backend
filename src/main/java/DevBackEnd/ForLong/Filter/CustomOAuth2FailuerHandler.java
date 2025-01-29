@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -25,22 +26,22 @@ public class CustomOAuth2FailuerHandler implements AuthenticationFailureHandler 
         }
 
         String redirectUri = request.getParameter("redirect_uri");
+        log.info("Received redirect_uri: {}", redirectUri);
+        log.info("OAuth2 error handler - full request URL: {}", request.getRequestURL());
+
         String errorMessage;
         int statusCode;
 
-        if (redirectUri == null || redirectUri.isEmpty()) {
-            log.info("400 오류 발생");
-            errorMessage = "Missing or invalid redirect_url parameter";
-            statusCode = HttpServletResponse.SC_BAD_REQUEST;
-        } else{
-            log.info("500 오류 발생");
-            errorMessage ="OAuth2 authentication failed due to a server error.";
-            statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        if (exception instanceof OAuth2AuthenticationException) {
+            statusCode = HttpServletResponse.SC_UNAUTHORIZED; // 401 Unauthorized
+            errorMessage = "OAuth2 authentication failed: " + exception.getMessage();
+        } else {
+            statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR; // 500 Internal Server Error
+            errorMessage = "Unexpected authentication failure: " + exception.getMessage();
         }
 
-        response.setStatus(statusCode);
-        response.setContentType("application/json;charset=UTF-8");
+        log.info("OAuth2 실패 응답 - 상태 코드: {}, 메시지: {}", statusCode, errorMessage);
 
-        response.getWriter().write(String.format("{\"error\": \"%s\", \"status\": %d}", errorMessage, statusCode));
+        response.sendError(statusCode, errorMessage);
     }
 }

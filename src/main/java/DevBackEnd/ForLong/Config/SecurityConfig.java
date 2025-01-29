@@ -85,13 +85,9 @@ public class SecurityConfig {
          * */
         http
                 .oauth2Login((oauth) -> oauth
-                        .userInfoEndpoint((userInfo) -> {
-                            try {
-                                userInfo.userService(customOauth2UserService);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        })
+                        .userInfoEndpoint((userInfo) ->
+                            {userInfo.userService(customOauth2UserService);}
+                        )
                         .successHandler(customOAuth2SuccessHandler)
                         .failureHandler(customOAuth2FailureHandler)
                 );
