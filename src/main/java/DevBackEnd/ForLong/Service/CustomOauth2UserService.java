@@ -3,6 +3,7 @@ package DevBackEnd.ForLong.Service;
 import DevBackEnd.ForLong.Converter.JoinConverter;
 import DevBackEnd.ForLong.Dto.CustomUserDetail;
 import DevBackEnd.ForLong.Dto.JoinDTO;
+import DevBackEnd.ForLong.Dto.KakaoUserDetails;
 import DevBackEnd.ForLong.Dto.NaverUserDetails;
 import DevBackEnd.ForLong.Entity.RefreshToken;
 import DevBackEnd.ForLong.Entity.User;
@@ -61,14 +62,18 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         String provider = request.getClientRegistration().getClientName();
         OAuth2UserInfo oAuth2UserInfo = null;
         log.info("provider: {}", provider);
+
         if(provider.equals("naver")){
             log.info("네이버 로그인 요청");
             oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
         } else if (provider.equals("kakao")) {
             log.info("카카오 로그인 요청");
+            oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
+        } else {
+            throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 제공자입니다 : " + provider);
         }
 
-        String providerId = oAuth2UserInfo.getProviderId();
+        String providerId = provider +"_"+ oAuth2UserInfo.getProviderId();
         log.info("provider_Id: {}", providerId);
         String loginId = oAuth2UserInfo.getEmail();
         String nickname = oAuth2UserInfo.getNickname();
@@ -80,7 +85,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByLoginId(loginId);
 
         if (user == null){
-            String cleanPhone = phone.replaceAll("-", "");
+            String cleanPhone = (phone != null) ? phone.replaceAll("-", "") : "";
             String HashedPhone = HashUtil.hashPhoneNum(cleanPhone);
 
             JoinDTO joinDTO = new JoinDTO(loginId,"OAuth2 default value",nickname,email,
@@ -92,7 +97,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             String refresh = jwtUtil.createJwt("refresh", loginId, role, REFRESHMS);
             session.setAttribute("refresh", refresh);
             response.addCookie(cookieUtil.createCookie("refresh", refresh));
+
             log.info("refresh 토큰 저장 시도");
+            refreshRepository.deleteByUserId(loginId);
             addRefreshEntity(loginId,refresh,REFRESHMS);
             log.info("refresh 토큰 저장 완료");
 
