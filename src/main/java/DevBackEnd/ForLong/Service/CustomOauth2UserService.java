@@ -60,7 +60,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         String provider = request.getClientRegistration().getClientName();
         OAuth2UserInfo oAuth2UserInfo = null;
-
+        log.info("provider: {}", provider);
         if(provider.equals("naver")){
             log.info("네이버 로그인 요청");
             oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
@@ -69,6 +69,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         }
 
         String providerId = oAuth2UserInfo.getProviderId();
+        log.info("provider_Id: {}", providerId);
         String loginId = oAuth2UserInfo.getEmail();
         String nickname = oAuth2UserInfo.getNickname();
         String role = "ROLE_OAUTH2_USER";
@@ -82,8 +83,8 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             String cleanPhone = phone.replaceAll("-", "");
             String HashedPhone = HashUtil.hashPhoneNum(cleanPhone);
 
-            JoinDTO joinDTO = new JoinDTO(loginId,"OAuth2 default value",nickname,email,HashedPhone,
-                    role,provider,providerId);
+            JoinDTO joinDTO = new JoinDTO(loginId,"OAuth2 default value",nickname,email,
+                    HashedPhone,role,provider,providerId);
             log.info("신규 회원 저장 시도: {}", loginId);
             User savedUser = joinService.saveUser(joinDTO);
             log.info("신규 회원 저장 완료 : {}", joinDTO);
