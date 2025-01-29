@@ -18,6 +18,12 @@ public class CustomOAuth2FailuerHandler implements AuthenticationFailureHandler 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
+
+        if (response.isCommitted()) {
+            log.warn("OAuth2 실패 핸들러 실행 중단 - 응답이 이미 처리됨");
+            return;
+        }
+
         String redirectUri = request.getParameter("redirect_uri");
         String errorMessage;
         int statusCode;
