@@ -22,10 +22,13 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication auth) throws IOException, ServletException {
+        log.info("OAuth2 로그인 성공!");
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("{\"message\": \"Authentication successful.\"}");
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 
 
