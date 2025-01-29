@@ -25,17 +25,20 @@ public class KakaoUserDetails implements OAuth2UserInfo {
 
     @Override
     public String getProviderId() {
-        if(attributes.containsKey("id")){
-            return (String) attributes.get("id");
-        } else {
-            log.error("Provider Id를 찾을 수 없습니다.");
-            return null;
+        Object idObject = attributes.get("id");
+
+        if (idObject instanceof Long) {
+            return String.valueOf(idObject); // ✅ Long → String 변환
+        } else if (idObject instanceof String) {
+            return (String) idObject; // ✅ 이미 String이면 그대로 반환
         }
+
+        throw new IllegalStateException("Unexpected type for providerId: " + idObject);
     }
 
     @Override
     public String getProvider() {
-        return "Kakao";
+        return "kakao";
     }
 
     @Override

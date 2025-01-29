@@ -52,6 +52,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+        log.info("OAuth2 로그인 요청 - Provider: {}", request.getClientRegistration().getRegistrationId());
+        log.info("Authorization URI: {}", request.getClientRegistration().getProviderDetails().getAuthorizationUri());
+        log.info("Redirect URI: {}", request.getClientRegistration().getRedirectUri());
+
+
         OAuth2User oAuth2User = super.loadUser(request);
 
         return processOAuth2User(request,oAuth2User);
@@ -73,7 +78,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 제공자입니다 : " + provider);
         }
 
-        String providerId = provider +"_"+ oAuth2UserInfo.getProviderId();
+//        String providerId = provider +"_"+ oAuth2UserInfo.getProviderId();
+
+        Object providerIdObj = oAuth2User.getAttributes().get("id");
+        String providerId = provider + (providerIdObj != null ? providerIdObj.toString() : null);
+
         log.info("provider_Id: {}", providerId);
         String loginId = oAuth2UserInfo.getEmail();
         String nickname = oAuth2UserInfo.getNickname();
