@@ -15,14 +15,10 @@ public class NaverConfig {
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String NaverClientId;
 
-    @Value("${NAVER_REDIRECT}")
+    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String NaverRedirectUri;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String NaverClientSecret;
 
-    @PostConstruct
-    public void logRedirectUri() {
-        log.info("▶▶▶ NAVER_REDIRECT 적용 확인: {}", NaverRedirectUri);
-    }
 }
