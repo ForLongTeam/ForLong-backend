@@ -41,10 +41,10 @@ dependencies {
 
 
 	compileOnly 'org.projectlombok:lombok' // 롬복 사용
-	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'  // MapStruct 라이브러리: 객체 간 매핑 자동화를 위한 의존성
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'  // MapStruct 코드 생성기: 컴파일 시점에 매핑 코드 자동 생성
 	annotationProcessor 'org.projectlombok:lombok' // 롬복 어노테이션 프로세서
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'  // Lombok과 MapStruct 통합을 위한 바인딩 라이브러리
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // 테스트용 스프링 부트 스타터
 	testImplementation 'org.springframework.security:spring-security-test' // 스프링 시큐리티 테스트
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
