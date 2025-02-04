@@ -41,4 +41,13 @@ public class Reservation {
         this.status = newStatus;
     }
 
+
+    // 예약 상태 초기값 설정
+    @PrePersist
+    public void setDefaultStatus() {
+        if (this.status == null) {
+            this.status = ReservationStatus.PENDING; // 초기값을 PENDING(대기)로 설정
+        }
+    }
+
 }
