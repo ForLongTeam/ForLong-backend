@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -82,9 +83,10 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         Object providerIdObj = oAuth2User.getAttributes().get("id");
         String providerId = provider + (providerIdObj != null ? providerIdObj.toString() : null);
-
+//        String loginId = providerId;
         log.info("provider_Id: {}", providerId);
         String loginId = oAuth2UserInfo.getEmail();
+
         String nickname = oAuth2UserInfo.getNickname();
         String role = "ROLE_OAUTH2_USER";
         String email = oAuth2UserInfo.getEmail();
