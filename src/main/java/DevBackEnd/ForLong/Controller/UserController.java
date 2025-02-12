@@ -2,6 +2,9 @@ package DevBackEnd.ForLong.Controller;
 
 
 import DevBackEnd.ForLong.Dto.ApiResponseDTO;
+import DevBackEnd.ForLong.Dto.FindUserDTO;
+import DevBackEnd.ForLong.Repository.UserRepository;
+import DevBackEnd.ForLong.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     /**
      * 실제 로그인 로직은 LoginFilter를 통해 구현됨.
@@ -83,4 +94,29 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 회원 정보 조회
+     *
+     * {
+     *     "status": "success",
+     *     "message": "회원정보 조회 성공",
+     *     "data": {
+     *         "loginId": "user123",
+     *         "nickname": "JohnDoe",
+     *         "email": "johndoe@example.com",
+     *         "pets": ["Max", "Bella"]
+     *     }
+     * }
+     *
+     * */
+    @GetMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<FindUserDTO>> getUserInfo(@PathVariable String loginId){
+        FindUserDTO findUserDTO = userService.getUserByLoginId(loginId);
+
+        ApiResponseDTO<FindUserDTO> response = new ApiResponseDTO<>("sucess", "회원정보 조회 성공", findUserDTO);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
