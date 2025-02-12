@@ -69,8 +69,14 @@ public class UserService {
 
             }
         }
-
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(String loginId){
+        User user = userRepository.findByLoginId(loginId);
+
+        userRepository.delete(user);
     }
 
 }

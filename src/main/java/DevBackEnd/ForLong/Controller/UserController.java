@@ -4,6 +4,7 @@ package DevBackEnd.ForLong.Controller;
 import DevBackEnd.ForLong.Dto.ApiResponseDTO;
 import DevBackEnd.ForLong.Dto.EditUserDTO;
 import DevBackEnd.ForLong.Dto.FindUserDTO;
+import DevBackEnd.ForLong.Entity.User;
 import DevBackEnd.ForLong.Repository.UserRepository;
 import DevBackEnd.ForLong.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +22,11 @@ public class UserController {
 
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
@@ -134,5 +137,18 @@ public class UserController {
         ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원정보 수정 성공", null);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<Void>> deleteUserInfo(@PathVariable String loginId){
+        userService.deleteUser(loginId);
+
+        ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원 탈퇴 성공", null);
+        return ResponseEntity.ok(response);
+
+    }
+    
 
 }
