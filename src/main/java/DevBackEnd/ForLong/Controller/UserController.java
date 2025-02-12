@@ -2,6 +2,7 @@ package DevBackEnd.ForLong.Controller;
 
 
 import DevBackEnd.ForLong.Dto.ApiResponseDTO;
+import DevBackEnd.ForLong.Dto.EditUserDTO;
 import DevBackEnd.ForLong.Dto.FindUserDTO;
 import DevBackEnd.ForLong.Repository.UserRepository;
 import DevBackEnd.ForLong.Service.UserService;
@@ -98,16 +99,20 @@ public class UserController {
     /**
      * 회원 정보 조회
      *
-     * {
-     *     "status": "success",
-     *     "message": "회원정보 조회 성공",
-     *     "data": {
-     *         "loginId": "user123",
-     *         "nickname": "JohnDoe",
-     *         "email": "johndoe@example.com",
-     *         "pets": ["Max", "Bella"]
-     *     }
-     * }
+     {
+         "status": "success",
+         "message": "회원정보 조회 성공",
+         "data": {
+         "loginId": "user123",
+         "nickname": "JohnDoe",
+         "email": "johndoe@example.com",
+         "pets": [
+         {
+         "id": 1,
+         "name": "Happy",
+         "type": "강아지"
+         }
+     }
      *
      * */
     @GetMapping("/{loginId}")
@@ -118,5 +123,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 회원정보 수정
+     * */
+    @PostMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<Void>> EditUserInfo(@PathVariable String loginId,
+                                                                    @RequestBody EditUserDTO editUserDTO){
+        userService.editUser(loginId, editUserDTO);
+
+        ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원정보 수정 성공", null);
+        return ResponseEntity.ok(response);
+    }
 
 }
