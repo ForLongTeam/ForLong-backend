@@ -102,6 +102,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             return registerNewUser(oAuth2User, phone, loginId, nickname, email, role, provider, providerId);
         } else {
             log.info("기존 사용자 로그인 : {}, {}", loginId, user);
+            issueAndSaveRefreshToken(loginId, user.getRole(), response);
             return new CustomUserDetail(user, oAuth2User.getAttributes());
         }
     }
@@ -125,15 +126,26 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         User savedUser = joinService.saveUser(joinDTO);
         log.info("신규 회원 저장 완료 : {}", joinDTO);
 
+        issueAndSaveRefreshToken(loginId, role, response);
+        return new CustomUserDetail(savedUser, oAuth2User.getAttributes());
+    }
+
+    /**
+     * 신규 사용자와 기존 사용자 로그인 시에도 공통적으로 Refresh 토큰을 발급하고 쿠키로
+     * 클라이언트 개발자에게 제공하기 위한 함수
+     * */
+    private void issueAndSaveRefreshToken(String loginId, String role, HttpServletResponse response) {
         String refresh = jwtUtil.createJwt("refresh", loginId, role, REFRESHMS);
-        session.setAttribute("refresh", refresh);
+
+        // Refresh Token을 안전한 쿠키로 저장
+//        session.setAttribute("refresh", refresh);
         response.addCookie(cookieUtil.createCookie("refresh", refresh));
 
+        // 기존 Refresh Token 삭제 후 새로 저장
         log.info("refresh 토큰 저장 시도");
         refreshRepository.deleteByUserId(loginId);
         addRefreshEntity(loginId,refresh,REFRESHMS);
-        log.info("refresh 토큰 저장 완료");
-        return new CustomUserDetail(savedUser, oAuth2User.getAttributes());
+        log.info("Refresh Token 갱신 완료 - User: {}", loginId);
     }
 
     /**

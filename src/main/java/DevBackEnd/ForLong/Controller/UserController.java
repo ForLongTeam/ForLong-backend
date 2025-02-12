@@ -103,8 +103,6 @@ public class UserController {
      * 회원 정보 조회
      *
      {
-         "status": "success",
-         "message": "회원정보 조회 성공",
          "data": {
          "loginId": "user123",
          "nickname": "JohnDoe",
@@ -118,6 +116,24 @@ public class UserController {
      }
      *
      * */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @Operation(summary = "회원 정보 조회",
+            description = "     {\n" +
+                    "         \"data\": {\n" +
+                    "         \"loginId\": \"user123\",\n" +
+                    "         \"nickname\": \"JohnDoe\",\n" +
+                    "         \"email\": \"johndoe@example.com\",\n" +
+                    "         \"pets\": [\n" +
+                    "         {\n" +
+                    "         \"id\": 1,\n" +
+                    "         \"name\": \"Happy\",\n" +
+                    "         \"type\": \"강아지\"\n" +
+                    "         }\n" +
+                    "     }"
+    )
     @GetMapping("/{loginId}")
     public ResponseEntity<ApiResponseDTO<FindUserDTO>> getUserInfo(@PathVariable String loginId){
         FindUserDTO findUserDTO = userService.getUserByLoginId(loginId);
@@ -129,6 +145,14 @@ public class UserController {
     /**
      * 회원정보 수정
      * */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "오류"),
+            @ApiResponse(responseCode = "500", description = "서버 저장 오류")
+    })
+    @Operation(summary = "회원 정보 수정",
+    description = "회원정보를 수정 가능함. 수정 할 값만 json 형식으로 넣어서 서버에 제공." +
+            "새로운 애완동물도 추가 가능")
     @PostMapping("/{loginId}")
     public ResponseEntity<ApiResponseDTO<Void>> EditUserInfo(@PathVariable String loginId,
                                                                     @RequestBody EditUserDTO editUserDTO){
@@ -141,6 +165,14 @@ public class UserController {
     /**
      * 회원 탈퇴
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "400", description = "오류"),
+            @ApiResponse(responseCode = "500", description = "서버 삭제 오류")
+    })
+    @Operation(summary = "회원 탈퇴",
+            description = "loginId 해당 회원을 DB에서 삭제." +
+                    "loginId는 \"소셜회사_소셜 계정에 등록된 아이디\", ex) kakao_test@naver.com ")
     @DeleteMapping("/{loginId}")
     public ResponseEntity<ApiResponseDTO<Void>> deleteUserInfo(@PathVariable String loginId){
         userService.deleteUser(loginId);
@@ -149,6 +181,6 @@ public class UserController {
         return ResponseEntity.ok(response);
 
     }
-    
+
 
 }
