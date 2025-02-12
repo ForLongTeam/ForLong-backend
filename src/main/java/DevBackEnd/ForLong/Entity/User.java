@@ -44,8 +44,8 @@ public class User {
     @Column
     private String role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
@@ -60,10 +60,10 @@ public class User {
     @JoinColumn(name = "location_id")
     private UserLocation userLocation;
 
-    public void addPost(Post post) {
-        posts.add(post);
-        post.setUser(this);
-    }
+//    public void addPost(Post post) {
+//        posts.add(post);
+//        post.setUser(this);
+//    }
 
     public void addPet(Pet pet) {
         pets.add(pet);

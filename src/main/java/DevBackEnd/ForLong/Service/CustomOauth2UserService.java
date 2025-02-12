@@ -3,6 +3,7 @@ package DevBackEnd.ForLong.Service;
 import DevBackEnd.ForLong.Converter.JoinConverter;
 import DevBackEnd.ForLong.Dto.CustomUserDetail;
 import DevBackEnd.ForLong.Dto.JoinDTO;
+import DevBackEnd.ForLong.Dto.KakaoUserDetails;
 import DevBackEnd.ForLong.Dto.NaverUserDetails;
 import DevBackEnd.ForLong.Entity.RefreshToken;
 import DevBackEnd.ForLong.Entity.User;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -51,6 +54,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+        log.info("OAuth2 로그인 요청 - Provider: {}", request.getClientRegistration().getRegistrationId());
+        log.info("Authorization URI: {}", request.getClientRegistration().getProviderDetails().getAuthorizationUri());
+        log.info("Redirect URI: {}", request.getClientRegistration().getRedirectUri());
+
+
         OAuth2User oAuth2User = super.loadUser(request);
 
         return processOAuth2User(request,oAuth2User);
@@ -60,16 +68,26 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         String provider = request.getClientRegistration().getClientName();
         OAuth2UserInfo oAuth2UserInfo = null;
+        log.info("provider: {}", provider);
 
         if(provider.equals("naver")){
             log.info("네이버 로그인 요청");
             oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
         } else if (provider.equals("kakao")) {
             log.info("카카오 로그인 요청");
+            oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
+        } else {
+            throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 제공자입니다 : " + provider);
         }
 
-        String providerId = oAuth2UserInfo.getProviderId();
-        String loginId = oAuth2UserInfo.getEmail();
+//        String providerId = provider +"_"+ oAuth2UserInfo.getProviderId();
+
+        Object providerIdObj = oAuth2User.getAttributes().get("id");
+        String providerId = provider + (providerIdObj != null ? providerIdObj.toString() : null);
+//        String loginId = providerId;
+        log.info("provider_Id: {}", providerId);
+        String loginId = provider+'_'+oAuth2UserInfo.getEmail();
+
         String nickname = oAuth2UserInfo.getNickname();
         String role = "ROLE_OAUTH2_USER";
         String email = oAuth2UserInfo.getEmail();
@@ -79,30 +97,48 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByLoginId(loginId);
 
         if (user == null){
-            String cleanPhone = phone.replaceAll("-", "");
-            String HashedPhone = HashUtil.hashPhoneNum(cleanPhone);
-
-            JoinDTO joinDTO = new JoinDTO(loginId,"OAuth2 default value",nickname,email,HashedPhone,
-                    role,provider,providerId);
-            log.info("신규 회원 저장 시도: {}", loginId);
-            User savedUser = joinService.saveUser(joinDTO);
-            log.info("신규 회원 저장 완료 : {}", joinDTO);
-
-            String refresh = jwtUtil.createJwt("refresh", loginId, role, REFRESHMS);
-            session.setAttribute("refresh", refresh);
-            response.addCookie(cookieUtil.createCookie("refresh", refresh));
-            log.info("refresh 토큰 저장 시도");
-            addRefreshEntity(loginId,refresh,REFRESHMS);
-            log.info("refresh 토큰 저장 완료");
-
-            return new CustomUserDetail(savedUser, oAuth2User.getAttributes());
+            return registerNewUser(oAuth2User, phone, loginId, nickname, email, role, provider, providerId);
+        } else if (! user.getProvider().equals(provider)) {
+            return registerNewUser(oAuth2User, phone, loginId, nickname, email, role, provider, providerId);
+        } else {
+            log.info("기존 사용자 로그인 : {}, {}", loginId, user);
+            return new CustomUserDetail(user, oAuth2User.getAttributes());
         }
-
-        log.info("기존 사용자 로그인 : {}, {}", loginId, user);
-        return new CustomUserDetail(user, oAuth2User.getAttributes());
-
     }
 
+    /**
+     * 회원가입 메서드
+     * */
+
+    private CustomUserDetail registerNewUser(OAuth2User oAuth2User, String phone, String loginId, String nickname, String email, String role, String provider, String providerId) {
+
+        String cleanPhone = (phone != null) ? phone.replaceAll("-", "") : "";
+        String HashedPhone = HashUtil.hashPhoneNum(cleanPhone);
+
+        if(nickname == null){
+            String randomNum = String.valueOf(Math.random() * 1001);
+            nickname = provider + randomNum;
+        }
+        JoinDTO joinDTO = new JoinDTO(loginId,"OAuth2 default value", nickname, email,
+                HashedPhone, role, provider, providerId);
+        log.info("신규 회원 저장 시도: {}", loginId);
+        User savedUser = joinService.saveUser(joinDTO);
+        log.info("신규 회원 저장 완료 : {}", joinDTO);
+
+        String refresh = jwtUtil.createJwt("refresh", loginId, role, REFRESHMS);
+        session.setAttribute("refresh", refresh);
+        response.addCookie(cookieUtil.createCookie("refresh", refresh));
+
+        log.info("refresh 토큰 저장 시도");
+        refreshRepository.deleteByUserId(loginId);
+        addRefreshEntity(loginId,refresh,REFRESHMS);
+        log.info("refresh 토큰 저장 완료");
+        return new CustomUserDetail(savedUser, oAuth2User.getAttributes());
+    }
+
+    /**
+     * ReFresh 토큰 생성 메서드
+     * */
     private void addRefreshEntity(String loginId, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);

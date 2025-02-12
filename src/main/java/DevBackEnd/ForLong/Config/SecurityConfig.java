@@ -85,13 +85,9 @@ public class SecurityConfig {
          * */
         http
                 .oauth2Login((oauth) -> oauth
-                        .userInfoEndpoint((userInfo) -> {
-                            try {
-                                userInfo.userService(customOauth2UserService);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        })
+                        .userInfoEndpoint((userInfo) ->
+                            {userInfo.userService(customOauth2UserService);}
+                        )
                         .successHandler(customOAuth2SuccessHandler)
                         .failureHandler(customOAuth2FailureHandler)
                 );
@@ -135,7 +131,7 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration config = new CorsConfiguration();
 
-                                config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                                config.setAllowedOrigins(Collections.singletonList("http://localhost:57584"));
                                 config.setAllowedMethods(Collections.singletonList("*")); // 허용할 메소드 Get ect on
                                 config.setAllowCredentials(true);
                                 config.setAllowedHeaders(Collections.singletonList("*"));

@@ -50,6 +50,13 @@ public class JoinService {
             throw e;
         }
 
+        if(joinDTO.getProvider() != null){
+            log.info("Provider 저장 시작");
+            joinDTO.setProvider(joinDTO.getProvider());
+            joinDTO.setProvider_id(joinDTO.getProvider_id());
+            log.info("Provider 저장 완료");
+        }
+
         User user = JoinConverter.toEntity(joinDTO);
 
         try{
