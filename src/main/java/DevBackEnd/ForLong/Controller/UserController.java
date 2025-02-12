@@ -2,6 +2,11 @@ package DevBackEnd.ForLong.Controller;
 
 
 import DevBackEnd.ForLong.Dto.ApiResponseDTO;
+import DevBackEnd.ForLong.Dto.EditUserDTO;
+import DevBackEnd.ForLong.Dto.FindUserDTO;
+import DevBackEnd.ForLong.Entity.User;
+import DevBackEnd.ForLong.Repository.UserRepository;
+import DevBackEnd.ForLong.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +19,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+
+    private final UserService userService;
+    private final UserRepository userRepository;
+
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
+
 
     /**
      * 실제 로그인 로직은 LoginFilter를 통해 구현됨.
@@ -83,4 +98,57 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 회원 정보 조회
+     *
+     {
+         "status": "success",
+         "message": "회원정보 조회 성공",
+         "data": {
+         "loginId": "user123",
+         "nickname": "JohnDoe",
+         "email": "johndoe@example.com",
+         "pets": [
+         {
+         "id": 1,
+         "name": "Happy",
+         "type": "강아지"
+         }
+     }
+     *
+     * */
+    @GetMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<FindUserDTO>> getUserInfo(@PathVariable String loginId){
+        FindUserDTO findUserDTO = userService.getUserByLoginId(loginId);
+
+        ApiResponseDTO<FindUserDTO> response = new ApiResponseDTO<>("sucess", "회원정보 조회 성공", findUserDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 회원정보 수정
+     * */
+    @PostMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<Void>> EditUserInfo(@PathVariable String loginId,
+                                                                    @RequestBody EditUserDTO editUserDTO){
+        userService.editUser(loginId, editUserDTO);
+
+        ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원정보 수정 성공", null);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/{loginId}")
+    public ResponseEntity<ApiResponseDTO<Void>> deleteUserInfo(@PathVariable String loginId){
+        userService.deleteUser(loginId);
+
+        ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원 탈퇴 성공", null);
+        return ResponseEntity.ok(response);
+
+    }
+    
+
 }
