@@ -143,7 +143,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         // 기존 Refresh Token 삭제 후 새로 저장
         log.info("refresh 토큰 저장 시도");
-        refreshRepository.deleteByUserId(loginId);
+        if(refreshRepository.existsByUserId(loginId)){
+            refreshRepository.deleteByUserId(loginId);
+        }
         addRefreshEntity(loginId,refresh,REFRESHMS);
         log.info("Refresh Token 갱신 완료 - User: {}", loginId);
     }
