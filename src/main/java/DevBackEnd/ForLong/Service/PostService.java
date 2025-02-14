@@ -1,5 +1,7 @@
 package DevBackEnd.ForLong.Service;
 
+import DevBackEnd.ForLong.Dto.EditPostDTO;
+import DevBackEnd.ForLong.Dto.PostResponseDTO;
 import DevBackEnd.ForLong.Dto.PostSaveDTO;
 import DevBackEnd.ForLong.Entity.Post;
 import DevBackEnd.ForLong.Entity.User;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 @Service
 @Slf4j
 public class PostService {
@@ -43,5 +46,38 @@ public class PostService {
         log.info("게시물 저장 완료");
 
         return post.getId();
+    }
+
+    public PostResponseDTO getUserPost(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 게시글을 찾을 수 없습니다: " + postId));
+
+        return new PostResponseDTO(post);
+    }
+
+    @Transactional
+    public void editPost(Long postId, EditPostDTO editPostDTO){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 게시글을 찾을 수 없습니다: " + postId));
+
+        // 제목이 비어있지 않으면 게시물 업데이트
+        if(editPostDTO.getTitle() != null && !editPostDTO.getTitle().trim().isEmpty()){
+            post.setTitle(editPostDTO.getTitle());
+        }
+
+        // 본문이 비어있지 않으면 게시물 업데이트
+        if(editPostDTO.getContent() != null && !editPostDTO.getContent().trim().isEmpty()){
+            post.setContent(editPostDTO.getContent());
+        }
+
+        postRepository.save(post);
+    }
+
+    @Transactional
+    public void deletePost(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 게시글을 찾을 수 없습니다: " + postId));
+        log.info("게시물 삭제합니다.");
+        postRepository.delete(post);
     }
 }
