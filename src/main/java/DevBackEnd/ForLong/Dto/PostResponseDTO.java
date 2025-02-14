@@ -1,13 +1,12 @@
 package DevBackEnd.ForLong.Dto;
 
+import DevBackEnd.ForLong.Entity.Post;
 import DevBackEnd.ForLong.Entity.User;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class PostResponseDTO {
 
     private Long id;
@@ -15,5 +14,14 @@ public class PostResponseDTO {
     private String content;
     private User user;
     private LocalDateTime createdAt;
+
+    public PostResponseDTO(Post post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.user = post.getUser();
+        this.createdAt = LocalDateTime.now();
+    }
+
 
 }
