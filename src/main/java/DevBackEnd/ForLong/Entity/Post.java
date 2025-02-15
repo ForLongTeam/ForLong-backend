@@ -16,7 +16,7 @@ public class Post {
 
     @Id
     @Column(name = "post_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
