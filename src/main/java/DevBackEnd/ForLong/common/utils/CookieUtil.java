@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.common.Util;
+package DevBackEnd.ForLong.common.utils;
 
 import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Component;

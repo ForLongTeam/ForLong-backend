@@ -1,10 +1,10 @@
-package DevBackEnd.ForLong.common.Config;
+package DevBackEnd.ForLong.common.config;
 
 import DevBackEnd.ForLong.core.repository.RefreshRepository;
 import DevBackEnd.ForLong.features.login.Filter.*;
 import DevBackEnd.ForLong.features.login.service.CustomOauth2UserService;
-import DevBackEnd.ForLong.common.Util.CookieUtil;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
+import DevBackEnd.ForLong.common.utils.CookieUtil;
+import DevBackEnd.ForLong.common.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

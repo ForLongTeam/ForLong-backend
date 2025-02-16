@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.common.Util;
+package DevBackEnd.ForLong.common.utils;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
