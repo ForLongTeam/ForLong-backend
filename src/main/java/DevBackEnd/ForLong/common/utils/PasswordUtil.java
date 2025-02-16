@@ -1,7 +1,6 @@
-package DevBackEnd.ForLong.common.Util;
+package DevBackEnd.ForLong.common.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
 public class PasswordUtil {
 

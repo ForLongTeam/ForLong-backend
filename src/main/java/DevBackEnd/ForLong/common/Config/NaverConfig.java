@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.common.Config;
+package DevBackEnd.ForLong.common.config;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

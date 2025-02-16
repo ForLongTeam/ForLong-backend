@@ -1,10 +1,10 @@
 package DevBackEnd.ForLong.features.login.Filter;
 
-import DevBackEnd.ForLong.features.login.dto.LoginDTO;
+import DevBackEnd.ForLong.common.utils.CookieUtil;
+
 import DevBackEnd.ForLong.core.entity.RefreshToken;
 import DevBackEnd.ForLong.core.repository.RefreshRepository;
-import DevBackEnd.ForLong.common.Util.CookieUtil;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
+import DevBackEnd.ForLong.features.login.dto.LoginDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,11 +34,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public static final long ACCESSMS = 60 * 60 * 1000L;
     public static final long REFRESHMS = 24 * 60 * 60 * 1000L;
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RefreshRepository refreshRepository;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository) {
+    public LoginFilter(AuthenticationManager authenticationManager, DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository) {
         super.setFilterProcessesUrl("/api/login");
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;

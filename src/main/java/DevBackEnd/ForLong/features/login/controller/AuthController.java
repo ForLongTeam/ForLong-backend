@@ -1,10 +1,9 @@
 package DevBackEnd.ForLong.features.login.controller;
 
 import DevBackEnd.ForLong.common.utils.ApiResponseDTO;
+import DevBackEnd.ForLong.common.utils.CookieUtil;
 import DevBackEnd.ForLong.core.entity.RefreshToken;
 import DevBackEnd.ForLong.core.repository.RefreshRepository;
-import DevBackEnd.ForLong.common.Util.CookieUtil;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +12,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,13 +26,13 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final JwtUtil jwtUtil;
+    private final DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RefreshRepository refreshRepository;
     public static final long ACCESSMS = 60 * 60 * 1000L;
     public static final long REFRESHMS = 24 * 60 * 60 * 1000L;
 
-    public AuthController(JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository) {
+    public AuthController(DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil, CookieUtil cookieUtil, RefreshRepository refreshRepository) {
         this.jwtUtil = jwtUtil;
         this.cookieUtil = cookieUtil;
         this.refreshRepository = refreshRepository;

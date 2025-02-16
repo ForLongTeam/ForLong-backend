@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.common.Config;
+package DevBackEnd.ForLong.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

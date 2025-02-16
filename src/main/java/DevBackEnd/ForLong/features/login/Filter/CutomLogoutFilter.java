@@ -1,7 +1,7 @@
 package DevBackEnd.ForLong.features.login.Filter;
 
 import DevBackEnd.ForLong.core.repository.RefreshRepository;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
+import DevBackEnd.ForLong.common.utils.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

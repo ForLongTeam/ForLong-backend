@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.common.Util;
+package DevBackEnd.ForLong.common.utils;
 
 
 import java.nio.charset.StandardCharsets;

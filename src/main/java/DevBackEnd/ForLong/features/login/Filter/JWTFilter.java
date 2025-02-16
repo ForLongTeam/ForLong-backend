@@ -2,7 +2,7 @@ package DevBackEnd.ForLong.features.login.Filter;
 
 import DevBackEnd.ForLong.features.login.dto.CustomUserDetail;
 import DevBackEnd.ForLong.core.entity.User;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
+import DevBackEnd.ForLong.common.utils.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

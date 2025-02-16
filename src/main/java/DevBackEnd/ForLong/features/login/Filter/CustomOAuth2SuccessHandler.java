@@ -1,8 +1,7 @@
 package DevBackEnd.ForLong.features.login.Filter;
 
+import DevBackEnd.ForLong.common.utils.CookieUtil;
 import DevBackEnd.ForLong.features.login.dto.CustomUserDetail;
-import DevBackEnd.ForLong.common.Util.CookieUtil;
-import DevBackEnd.ForLong.common.Util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,10 +21,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
     public static final long REFRESHMS = 60 * 60 * 1000L;
 
-    private final JwtUtil jwtUtil;
+    private final DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
 
-    public CustomOAuth2SuccessHandler(JwtUtil jwtUtil, CookieUtil cookieUtil) {
+    public CustomOAuth2SuccessHandler(DevBackEnd.ForLong.common.utils.JwtUtil jwtUtil, CookieUtil cookieUtil) {
         this.jwtUtil = jwtUtil;
         this.cookieUtil = cookieUtil;
     }
