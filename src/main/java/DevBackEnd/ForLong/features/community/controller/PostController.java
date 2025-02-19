@@ -107,7 +107,6 @@ public class PostController {
     /**
      * Post 리스트 반환
      * */
-
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시물 조회 성공"),
             @ApiResponse(responseCode = "400", description = "몰라 400 오류임"),
