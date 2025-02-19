@@ -1,6 +1,7 @@
 package DevBackEnd.ForLong.features.community.service;
 
 import DevBackEnd.ForLong.features.community.dto.EditPostDTO;
+import DevBackEnd.ForLong.features.community.dto.PostListDTO;
 import DevBackEnd.ForLong.features.community.dto.PostResponseDTO;
 import DevBackEnd.ForLong.features.community.dto.PostSaveDTO;
 import DevBackEnd.ForLong.core.entity.Post;
@@ -8,9 +9,15 @@ import DevBackEnd.ForLong.core.entity.User;
 import DevBackEnd.ForLong.core.repository.PostRepository;
 import DevBackEnd.ForLong.core.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 @Service
 @Slf4j
@@ -18,10 +25,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
@@ -79,5 +88,18 @@ public class PostService {
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 게시글을 찾을 수 없습니다: " + postId));
         log.info("게시물 삭제합니다.");
         postRepository.delete(post);
+    }
+
+    /**
+     * 게시물 페이징 메서드
+     * */
+    public List<PostListDTO> getNewProducts(int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "ctDate"));
+        Page<Post> posts = postRepository.findAllByOrderByCtDateDesc(pageable);
+
+        return posts
+                .getContent().stream()
+                .map(post -> modelMapper.map(post, PostListDTO.class))
+                .toList();
     }
 }
