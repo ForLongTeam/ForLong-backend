@@ -3,6 +3,7 @@ package DevBackEnd.ForLong.features.community.controller;
 
 import DevBackEnd.ForLong.common.utils.ApiResponseDTO;
 import DevBackEnd.ForLong.features.community.dto.EditPostDTO;
+import DevBackEnd.ForLong.features.community.dto.PostListDTO;
 import DevBackEnd.ForLong.features.community.dto.PostResponseDTO;
 import DevBackEnd.ForLong.features.community.dto.PostSaveDTO;
 import DevBackEnd.ForLong.features.community.service.PostService;
@@ -10,8 +11,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -98,5 +102,26 @@ public class PostController {
         postService.deletePost(postId);
         ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "게시물 삭제 완료했습니다.", null);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Post 리스트 반환
+     * */
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시물 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "몰라 400 오류임"),
+            @ApiResponse(responseCode = "500", description = "서버 조회 오류")
+    })
+    @Operation(summary = "게시물 조회 페이징",
+            description = "쿼리파라미터를 통해 원하는 page와 size를 서버로 전달")
+    @GetMapping("/new")
+    public ResponseEntity<ApiResponseDTO<List<PostListDTO>>> NewPostList(@RequestParam(defaultValue = "0") int page
+                                    , @RequestParam(defaultValue = "10") int size){
+        List<PostListDTO> PostList = postService.getNewProducts(page, size);
+
+        ApiResponseDTO<List<PostListDTO>> response = new ApiResponseDTO<>("success", "게시물 리스트 반환 성공", PostList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

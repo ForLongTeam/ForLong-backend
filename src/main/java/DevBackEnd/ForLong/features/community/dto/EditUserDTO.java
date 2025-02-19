@@ -1,6 +1,6 @@
 package DevBackEnd.ForLong.features.community.dto;
 
-import DevBackEnd.ForLong.features.login.dto.PetDTO;
+import DevBackEnd.ForLong.features.user.dto.PetDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
