@@ -1,4 +1,4 @@
-package DevBackEnd.ForLong.features.login.dto;
+package DevBackEnd.ForLong.features.user.dto;
 
 
 import DevBackEnd.ForLong.core.entity.Pet;

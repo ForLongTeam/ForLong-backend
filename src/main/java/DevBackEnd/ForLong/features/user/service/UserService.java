@@ -1,8 +1,8 @@
-package DevBackEnd.ForLong.features.login.service;
+package DevBackEnd.ForLong.features.user.service;
 
 import DevBackEnd.ForLong.features.community.dto.EditUserDTO;
-import DevBackEnd.ForLong.features.login.dto.FindUserDTO;
-import DevBackEnd.ForLong.features.login.dto.PetDTO;
+import DevBackEnd.ForLong.features.user.dto.FindUserDTO;
+import DevBackEnd.ForLong.features.user.dto.PetDTO;
 import DevBackEnd.ForLong.core.entity.Pet;
 import DevBackEnd.ForLong.core.entity.User;
 import DevBackEnd.ForLong.core.repository.UserRepository;
