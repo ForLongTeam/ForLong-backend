@@ -108,6 +108,13 @@ public class PostController {
      * Post 리스트 반환
      * */
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시물 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "몰라 400 오류임"),
+            @ApiResponse(responseCode = "500", description = "서버 조회 오류")
+    })
+    @Operation(summary = "게시물 조회 페이징",
+            description = "쿼리파라미터를 통해 원하는 page와 size를 서버로 전달")
     @GetMapping("/new")
     public ResponseEntity<ApiResponseDTO<List<PostListDTO>>> NewPostList(@RequestParam(defaultValue = "0") int page
                                     , @RequestParam(defaultValue = "10") int size){
