@@ -1,7 +1,10 @@
 package DevBackEnd.ForLong.features.user.service;
 
+import DevBackEnd.ForLong.core.entity.Post;
+import DevBackEnd.ForLong.core.repository.PostRepository;
 import DevBackEnd.ForLong.features.community.dto.EditUserDTO;
 import DevBackEnd.ForLong.features.user.dto.FindUserDTO;
+import DevBackEnd.ForLong.features.user.dto.MyPostListDTO;
 import DevBackEnd.ForLong.features.user.dto.PetDTO;
 import DevBackEnd.ForLong.core.entity.Pet;
 import DevBackEnd.ForLong.core.entity.User;
@@ -13,14 +16,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     public FindUserDTO getUserByLoginId(String loginId){
         User user = userRepository.findByLoginId(loginId);
         return new FindUserDTO(user);
+    }
+
+    public MyPostListDTO getPostsByLoginId(String loginId){
+        User user = userRepository.findByLoginId(loginId);
+        Post post = postRepository.findByUser(user);
+
+        return new MyPostListDTO(post);
+
     }
 
     @Transactional

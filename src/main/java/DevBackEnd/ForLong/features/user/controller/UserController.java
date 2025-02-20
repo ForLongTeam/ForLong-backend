@@ -3,15 +3,18 @@ package DevBackEnd.ForLong.features.user.controller;
 import DevBackEnd.ForLong.common.utils.ApiResponseDTO;
 import DevBackEnd.ForLong.features.community.dto.EditUserDTO;
 import DevBackEnd.ForLong.features.user.dto.FindUserDTO;
+import DevBackEnd.ForLong.features.user.dto.MyPostListDTO;
 import DevBackEnd.ForLong.features.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/users")
 @Slf4j
 public class UserController {
 
@@ -102,5 +105,26 @@ public class UserController {
         ApiResponseDTO<Void> response = new ApiResponseDTO<>("success", "회원 탈퇴 성공", null);
         return ResponseEntity.ok(response);
 
+    }
+
+
+    /**
+     * {loginId}가 작성한 게시물 리스트 조회
+     * */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시물 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "몰라 400 오류임"),
+            @ApiResponse(responseCode = "500", description = "서버 조회 오류")
+    })
+    @Operation(summary = "특정 유저가 작성한 게시물 조회",
+            description = "쿼리파라미터를 통해 조회하고픈 loginId를 서버로 전달")
+    @GetMapping("/{loginId}/posts")
+    public ResponseEntity<ApiResponseDTO<MyPostListDTO>> getUserPosts(@PathVariable String loginId){
+
+        MyPostListDTO data = userService.getPostsByLoginId(loginId);
+
+        ApiResponseDTO<MyPostListDTO> response = new ApiResponseDTO<>("success","해당 유저의 게시물 리스트 조회 성공 ", data);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
