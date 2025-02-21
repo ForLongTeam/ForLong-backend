@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral() // 메이븐 중앙 저장소 사용
+	google()
 }
 
 dependencies {
