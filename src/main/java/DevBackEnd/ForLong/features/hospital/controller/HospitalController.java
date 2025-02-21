@@ -42,7 +42,6 @@ public class HospitalController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping("/search")
-    @ResponseBody
     private ResponseEntity<List<HospitalDto>> searchHospital(@RequestParam("query") String keyword) {
         try {
             List<HospitalDto> hospitals = hospitalService.searchHospital(keyword);
@@ -78,7 +77,6 @@ public class HospitalController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping("/{hospitalId}")
-    @ResponseBody
     private ResponseEntity<HospitalDto> getHospital(@PathVariable Long hospitalId) {
         try {
             HospitalDto hospital = hospitalService.getHospital(hospitalId);
@@ -117,7 +115,6 @@ public class HospitalController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping("/location")
-    @ResponseBody
     private ResponseEntity<List<HospitalDto>> getHospitalsByLocation(
             @RequestParam("lat") String latitude,
             @RequestParam("lon") String longitude) {
