@@ -28,7 +28,7 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime ctDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

@@ -18,7 +18,7 @@ public class UnavailableDate {
     @Column
     private LocalDateTime not_date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vet_id")
     private Vet vet;
 }

@@ -17,7 +17,7 @@ public class NotDate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vet_id") // 의사 id
     private Vet vet;
 

@@ -9,7 +9,7 @@ import lombok.Getter;
 public class TreatAvailable {
 
     @Column(name = "treat_id")
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private Spiece spiece;
@@ -18,7 +18,7 @@ public class TreatAvailable {
 
     private AvailTreat availTreat;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vet_id") // 의사 id
     private Vet vet;
 
