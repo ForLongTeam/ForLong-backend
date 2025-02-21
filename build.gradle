@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.1' // 스프링 부트 플러그인
-	id 'io.spring.dependency-management' version '1.1.7' // 스프링 의존성 관리 플러그인
+	id 'org.springframework.boot' version '3.2.2' // 스프링 부트 플러그인
+	id 'io.spring.dependency-management' version '1.1.4' // 스프링 의존성 관리 플러그인
 }
 
 group = 'DevBackEnd'
