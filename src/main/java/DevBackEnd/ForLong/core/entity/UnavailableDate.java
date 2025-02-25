@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Table(name = "unavailable_date")
 public class UnavailableDate {
 
     @Id
