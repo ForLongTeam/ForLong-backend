@@ -6,16 +6,19 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "treat_available")
 public class TreatAvailable {
 
     @Column(name = "treat_id")
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Spiece spiece;
+    @Enumerated(EnumType.STRING)
+    private Species species;
 
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     private AvailTreat availTreat;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -15,10 +15,10 @@ public class Vet {
     @Id
     @Column(name = "vet_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long vetId;
 
     @Column
-    private String vet_name;
+    private String vetName;
 
     @Column
     @Enumerated(EnumType.STRING)
