@@ -1,6 +1,6 @@
 package DevBackEnd.ForLong.core.entity;
 
-public enum Spiece {
+public enum Species {
     포유류,
     설치류,
     어류,

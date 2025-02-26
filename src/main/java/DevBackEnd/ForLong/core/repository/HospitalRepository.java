@@ -3,14 +3,17 @@ package DevBackEnd.ForLong.core.repository;
 import DevBackEnd.ForLong.core.entity.Hospital;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 병원 정보를 관리하는 Repository 인터페이스
  * JpaRepository를 상속받아 기본적인 CRUD 기능을 제공
  * Hospital 엔티티와 Long 타입의 ID를 사용
  */
+@Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     
     /**
@@ -43,4 +46,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
            "    POINT(?2, ?1)" +
            ") <= 5000", nativeQuery = true)
     List<Hospital> findHospitalsWithin5km(double latitude, double longitude);
+
+    Optional<Hospital> findHospitalByHospitalId(Long hospitalId);
+
 }

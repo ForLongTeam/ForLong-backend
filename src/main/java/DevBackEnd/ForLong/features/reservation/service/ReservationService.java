@@ -70,7 +70,7 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원 ID: " + hospitalId));
 
         // 2. hospitalId 기반 예약 목록 조회
-        return reservationRepository.findByHospital_Id(hospitalId);
+        return reservationRepository.findByHospitalId(hospitalId);
     }
 
 
@@ -85,7 +85,7 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 ID: " + userId));
 
         // 2. userId 기반 예약 목록 조회
-        return reservationRepository.findByUser_Id(userId);
+        return reservationRepository.findByUserId(userId);
     }
 
 
