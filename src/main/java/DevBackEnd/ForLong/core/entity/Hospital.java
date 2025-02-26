@@ -13,12 +13,13 @@ import java.util.List;
 @Entity // JPA 엔티티로 지정
 @Getter // 모든 필드에 대한 getter 메서드 자동 생성
 @Setter // 모든 필드에 대한 setter 메서드 자동 생성
+@Table(name = "hospital") // 데이터베이스 테이블 이름 지정
 public class Hospital {
 
     @Id // 기본 키 지정
     @Column(name = "hospital_id") // 데이터베이스 컬럼 이름 지정
     @GeneratedValue(strategy = GenerationType.AUTO) // 자동 생성 전략
-    private Long id; // 병원 ID
+    private Long hospitalId; // 병원 ID
 
     @Column(name = "hospital_name") // 데이터베이스 컬럼 이름 지정
     private String hospitalName; // 병원 이름
