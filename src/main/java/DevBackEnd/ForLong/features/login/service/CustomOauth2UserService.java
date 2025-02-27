@@ -1,9 +1,6 @@
 package DevBackEnd.ForLong.features.login.service;
 
-import DevBackEnd.ForLong.features.login.dto.CustomUserDetail;
-import DevBackEnd.ForLong.features.login.dto.JoinDTO;
-import DevBackEnd.ForLong.features.login.dto.KakaoUserDetails;
-import DevBackEnd.ForLong.features.login.dto.NaverUserDetails;
+import DevBackEnd.ForLong.features.login.dto.*;
 import DevBackEnd.ForLong.core.entity.RefreshToken;
 import DevBackEnd.ForLong.core.entity.User;
 import DevBackEnd.ForLong.core.repository.OAuth2UserInfo;
@@ -18,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -57,38 +55,48 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(request);
 
+        log.info("OAuth2User : {}", oAuth2User.getAttributes());
         return processOAuth2User(request,oAuth2User);
     }
 
-    private OAuth2User processOAuth2User(OAuth2UserRequest request, OAuth2User oAuth2User) {
+    private OAuth2User processOAuth2User(OAuth2UserRequest request, OAuth2User oAuth2User) throws OAuth2AuthenticationException {
 
-        String provider = request.getClientRegistration().getClientName();
+        String provider = request.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = null;
         log.info("provider: {}", provider);
 
-        if(provider.equals("naver")){
-            log.info("네이버 로그인 요청");
-            oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
-        } else if (provider.equals("kakao")) {
-            log.info("카카오 로그인 요청");
-            oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
-        } else {
-            throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 제공자입니다 : " + provider);
+        try{
+            if(provider.equals("naver")){
+                log.info("네이버 로그인 요청");
+                oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
+            } else if (provider.equals("kakao")) {
+                log.info("카카오 로그인 요청");
+                oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
+            } else if (provider.equals("google")) {
+                log.info("구글 로그인 요청");
+                oAuth2UserInfo = new GoogleUserDetails(oAuth2User.getAttributes());
+                log.info("GoogleUserDetails 객체 생성 완료 : {}", oAuth2UserInfo);
+            } else {
+                throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 제공자입니다 : " + provider);
+            }
+            if (oAuth2UserInfo == null) {
+                throw new OAuth2AuthenticationException("OAuth2UserInfo 객체 생성 실패");
+            }
+        } catch (Exception e) {
+            log.error("OAuth2UserInfo 매핑 실패: {}", e.getMessage());
+            throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_mapping_error"));
         }
 
-//        String providerId = provider +"_"+ oAuth2UserInfo.getProviderId();
+        String userInfoProvider = oAuth2UserInfo.getProvider();
+        String providerId = userInfoProvider +"_"+ oAuth2UserInfo.getProviderId();
 
-        Object providerIdObj = oAuth2User.getAttributes().get("id");
-        String providerId = provider + (providerIdObj != null ? providerIdObj.toString() : null);
-//        String loginId = providerId;
         log.info("provider_Id: {}", providerId);
-        String loginId = provider+'_'+oAuth2UserInfo.getEmail();
+        String loginId = userInfoProvider +'_'+oAuth2UserInfo.getEmail();
 
         String nickname = oAuth2UserInfo.getNickname();
         String role = "ROLE_OAUTH2_USER";
         String email = oAuth2UserInfo.getEmail();
         String phone = oAuth2UserInfo.getMobile();
-//        Optional<User> userOptional = Optional.ofNullable(userRepository.findByLoginId(loginId));
 
         User user = userRepository.findByLoginId(loginId);
 
