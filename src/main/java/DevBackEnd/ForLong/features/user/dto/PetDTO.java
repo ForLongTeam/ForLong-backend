@@ -11,8 +11,8 @@ import lombok.Setter;
 public class PetDTO {
     private Long id;
     String pet_name;
-    String getAgeMonths;
-    String getAgeYears;
+    String AgeMonths;
+    String AgeYears;
     String weight;
     String pet_type;
     PetGender gender;
