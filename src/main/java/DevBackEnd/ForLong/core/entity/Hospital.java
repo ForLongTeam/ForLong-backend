@@ -1,14 +1,25 @@
 package DevBackEnd.ForLong.core.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import lombok.*;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity // JPA 엔티티로 지정
 @Getter // 모든 필드에 대한 getter 메서드 자동 생성
@@ -45,7 +56,10 @@ public class Hospital {
     private String explainHospital; // 병원 설명
 
     @Column // 데이터베이스 컬럼
-    private LocalDateTime breaktime; // 병원 휴식 시간
+    private LocalTime breakStartTime; // 병원 휴식 시간
+
+    @Column // 데이터베이스 컬럼
+    private LocalTime breakEndTime; // 병원 휴식 종료 시간
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // 일대일 관계, 연관된 엔티티 삭제 시 함께 삭제
     @JoinColumn(name = "address_id") // 외래 키 컬럼 이름 지정
@@ -60,39 +74,4 @@ public class Hospital {
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HospitalImage> images = new ArrayList<>();
-
-    // 수의사 추가 메서드
-    public void addVet(Vet vet) {
-        vets.add(vet); // 수의사 목록에 추가
-    }
-
-    // 수의사 제거 메서드
-    public void removeVet(Vet vet) {
-        vets.remove(vet); // 수의사 목록에서 제거
-    }
-
-    // 예약 추가 메서드
-    public void addReservation(Reservation reservation) {
-        reservations.add(reservation); // 예약 목록에 추가
-        reservation.setHospital(this); // 예약의 병원 설정
-    }
-
-    // 예약 제거 메서드
-    public void removeReservation(Reservation reservation) {
-        reservations.remove(reservation); // 예약 목록에서 제거
-        reservation.setHospital(null); // 예약의 병원 설정 해제
-    }
-
-    // 이미지 추가 메서드
-    public void addImage(HospitalImage image) {
-        images.add(image);
-        image.setHospital(this);
-    }
-
-    // 이미지 삭제 메서드
-    public void removeImage(HospitalImage image) {
-        images.remove(image);
-        image.setHospital(null);
-    }
-
 }
