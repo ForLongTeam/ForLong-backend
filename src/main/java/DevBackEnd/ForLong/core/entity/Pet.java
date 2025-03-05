@@ -18,10 +18,25 @@ public class Pet {
     private String pet_name;
 
     @Column
-    private Integer pet_age;
+    private Integer ageYears;
+
+    @Column
+    private Integer ageMonths;
+
+    @Column
+    private Integer weight;
 
     @Column
     private String pet_type;
+
+    @Column
+    private String petImage;
+
+    @Column
+    private PetGender gender;
+
+    @Column
+    private boolean isRepresentative;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
