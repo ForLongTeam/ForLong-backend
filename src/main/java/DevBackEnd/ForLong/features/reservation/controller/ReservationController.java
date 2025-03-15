@@ -2,6 +2,8 @@ package DevBackEnd.ForLong.features.reservation.controller;
 
 import DevBackEnd.ForLong.core.entity.Reservation;
 import DevBackEnd.ForLong.core.entity.ReservationStatus;
+import DevBackEnd.ForLong.features.reservation.dto.ReservationHospitalDTO;
+import DevBackEnd.ForLong.features.reservation.dto.ReservationUserDTO;
 import DevBackEnd.ForLong.features.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,8 +45,8 @@ public class ReservationController {
      * @return 해당 병원의 예약 목록
      */
     @GetMapping("/api/reservations/hospital/{hospitalId}")
-    public ResponseEntity<List<Reservation>> getReservationsByHospitalId(@PathVariable Long hospitalId) {
-        List<Reservation> reservations = reservationService.getReservationsByHospitalId(hospitalId);
+    public ResponseEntity<List<ReservationHospitalDTO>> getReservationsByHospitalId(@PathVariable Long hospitalId) {
+        List<ReservationHospitalDTO> reservations = reservationService.getReservationsByHospitalId(hospitalId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
@@ -55,8 +57,8 @@ public class ReservationController {
      * @return 해당 유저의 예약 목록
      */
     @GetMapping("/api/reservations/user/{userId}")
-    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable Long userId) {
-        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
+    public ResponseEntity<List<ReservationUserDTO>> getReservationsByUserId(@PathVariable Long userId) {
+        List<ReservationUserDTO> reservations = reservationService.getReservationsByUserId(userId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 

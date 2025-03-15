@@ -7,12 +7,15 @@ import DevBackEnd.ForLong.core.entity.User;
 import DevBackEnd.ForLong.core.repository.HospitalRepository;
 import DevBackEnd.ForLong.core.repository.ReservationRepository;
 import DevBackEnd.ForLong.core.repository.UserRepository;
+import DevBackEnd.ForLong.features.reservation.dto.ReservationHospitalDTO;
+import DevBackEnd.ForLong.features.reservation.dto.ReservationUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -64,13 +67,16 @@ public class ReservationService {
      * @param hospitalId 병원 ID
      * @return 해당 병원의 예약 목록
      */
-    public List<Reservation> getReservationsByHospitalId(Long hospitalId) {
+    public List<ReservationHospitalDTO> getReservationsByHospitalId(Long hospitalId) {
         // 1. Hospital 엔티티 존재 여부 확인
-        hospitalRepository.findById(hospitalId)
+        Hospital hospital = hospitalRepository.findById(hospitalId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원 ID: " + hospitalId));
-
         // 2. hospitalId 기반 예약 목록 조회
-        return reservationRepository.findByHospitalId(hospitalId);
+        List<Reservation> repository = reservationRepository.findByHospitalId(hospitalId);
+
+        return repository.stream()
+                .map(ReservationHospitalDTO::new)  // 예약 리스트를 DTO 리스트로 변환
+                .collect(Collectors.toList());
     }
 
 
@@ -79,13 +85,17 @@ public class ReservationService {
      * @param userId 유저 ID
      * @return 해당 유저의 예약 목록
      */
-    public List<Reservation> getReservationsByUserId(Long userId) {
+    public List<ReservationUserDTO> getReservationsByUserId(Long userId) {
         // 1. User 엔티티 존재 여부 확인
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 ID: " + userId));
 
         // 2. userId 기반 예약 목록 조회
-        return reservationRepository.findByUserId(userId);
+        List<Reservation> reservations  = reservationRepository.findByUser(user);
+
+        return reservations.stream()
+                .map(ReservationUserDTO::new)  // 예약 리스트를 DTO 리스트로 변환
+                .collect(Collectors.toList());
     }
 
 
