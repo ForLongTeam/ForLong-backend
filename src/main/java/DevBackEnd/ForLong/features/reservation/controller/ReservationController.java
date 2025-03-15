@@ -1,18 +1,15 @@
 package DevBackEnd.ForLong.features.reservation.controller;
 
-import DevBackEnd.ForLong.core.entity.Reservation;
+import DevBackEnd.ForLong.common.utils.ApiResponseDTO;
 import DevBackEnd.ForLong.core.entity.ReservationStatus;
-import DevBackEnd.ForLong.features.reservation.dto.ReservationHospitalDTO;
-import DevBackEnd.ForLong.features.reservation.dto.ReservationUserDTO;
+import DevBackEnd.ForLong.features.reservation.dto.*;
 import DevBackEnd.ForLong.features.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ReservationController {
@@ -25,17 +22,12 @@ public class ReservationController {
     }
 
 
-
     @PostMapping("/api/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Map<String, Object> requestBody) {
-        Long userId = Long.parseLong(requestBody.get("userId").toString());
-        Long hospitalId = Long.parseLong(requestBody.get("hospitalId").toString());
-        LocalDateTime reservationDate = LocalDateTime.parse(requestBody.get("reservationDate").toString()); // String -> LocalDateTime 변환
-        LocalDateTime reservationTime = LocalDateTime.parse(requestBody.get("reservationTime").toString()); // String -> LocalDateTime 변환
+    public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO request) {
 
-        Reservation createdReservation = reservationService.createReservation(userId, hospitalId, reservationDate, reservationTime); // Service 메소드 호출
+        ReservationResponseDTO responseDTO = reservationService.createReservation(request);
 
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
 
@@ -63,19 +55,16 @@ public class ReservationController {
     }
 
 
-    /**
-     * 예약 상태 변경 API
-     * @param reservationId 예약 ID
-     * @param newStatus 변경할 예약 상태 (PENDING, APPROVED, REJECTED 중 하나)
-     * @return 성공 여부
-     */
+
     @PutMapping("/api/reservations/{reservationId}/status")
-    public ResponseEntity<Reservation> updateReservationStatus(
+    public ResponseEntity<ApiResponseDTO<Long>> updateReservationStatus(
             @PathVariable Long reservationId,
-            @RequestParam("status") ReservationStatus newStatus
+            @RequestBody ReservationStatusUpdateDTO request
     ) {
-        Reservation updatedReservation = reservationService.updateReservationStatus(reservationId, newStatus);
-        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+        Long updatedReservationId = reservationService.updateReservationStatus(reservationId, request);
+        ApiResponseDTO<Long> response = new ApiResponseDTO<>("success","예약 상태 변경 성공",updatedReservationId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -85,8 +74,8 @@ public class ReservationController {
      * @return 성공 여부
      */
     @DeleteMapping("/api/reservations/{reservationId}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<ApiResponseDTO<Void>> deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(new ApiResponseDTO<>("success", "예약 취소 성공", null));
     }
 }
