@@ -6,6 +6,8 @@ import DevBackEnd.ForLong.core.entity.Vet;
 import DevBackEnd.ForLong.core.repository.HospitalRepository;
 import DevBackEnd.ForLong.core.repository.NotDateRepository;
 import DevBackEnd.ForLong.core.repository.VetRepository;
+import DevBackEnd.ForLong.features.reservation.dto.NotDateRequestDTO;
+import DevBackEnd.ForLong.features.reservation.dto.NotDateResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,29 +27,23 @@ public class NotDateService {
         this.hospitalRepository = hospitalRepository;
     }
 
-    /**
-     * 예약 불가능한 날짜 및 시간 추가.............. 개같네
-     * @param vetId : 의사 ID
-     * @param hospitalId : 병원 ID
-     * @param notDate : 예약 불가능한 날짜 및 시간 timestamp임
-     * @return -> 생성된 NotDate 엔티티
-     */
 
-    public NotDate createNotDate(Long vetId, Long hospitalId, LocalDateTime notDate) {
+    public NotDateResponseDTO createNotDate(NotDateRequestDTO requestDTO) {
         // 1. Vet, Hotpital 엔티티 조회.
-        Vet vet = vetRepository.findById(vetId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 의사 ID: " + vetId)); // 의사 ID가 없을 경우
+        Vet vet = vetRepository.findById(requestDTO.getVetId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 의사 ID: " + requestDTO.getVetId())); // 의사 ID가 없을 경우
 
-        Hospital hospital = hospitalRepository.findById(hospitalId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원 ID: " + hospitalId)); // 병원 ID가 없을 경우
+        Hospital hospital = hospitalRepository.findById(requestDTO.getHospitalId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원 ID: " + requestDTO.getHospitalId())); // 병원 ID가 없을 경우
 
         // 2. NotDate 엔티티 생성.
         NotDate newNotDate = new NotDate();
         newNotDate.setVet(vet);
         newNotDate.setHospital(hospital);
-        newNotDate.setNotDate(notDate);
+        newNotDate.setNotDate(requestDTO.getNotDate());
 
         // 3. NotDate 엔티티 저장.
-        return notDateRepository.save(newNotDate);
+        NotDate savedNotDate = notDateRepository.save(newNotDate);
+        return new NotDateResponseDTO(savedNotDate);
     }
 }
