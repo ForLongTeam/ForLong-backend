@@ -36,7 +36,7 @@ public class Pet {
     private PetGender gender;
 
     @Column
-    private boolean isRepresentative;
+    private Boolean isRepresentative;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
