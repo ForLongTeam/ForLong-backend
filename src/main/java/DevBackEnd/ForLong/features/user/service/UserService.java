@@ -66,15 +66,17 @@ public class UserService {
                     if (petDTO.getPet_type() != null) {
                         existingPet.setPet_type(petDTO.getPet_type());
                     }
-                    if (petDTO.getPet_age() != null){
-                        existingPet.setPet_age(Integer.valueOf(petDTO.getPet_age()));
+                    if (petDTO.getAgeYears() != null && petDTO.getAgeMonths() != null) {
+                        existingPet.setAgeYears(Integer.valueOf(petDTO.getAgeYears()));
+                        existingPet.setAgeMonths(Integer.valueOf(petDTO.getAgeMonths()));
                     }
                 } else {
                     Pet newPet = new Pet();
                     newPet.setPet_name(petDTO.getPet_name());
                     newPet.setPet_type(petDTO.getPet_type());
-                    if (petDTO.getPet_age() != null) {
-                        newPet.setPet_age(Integer.valueOf(petDTO.getPet_age()));
+                    if (petDTO.getAgeYears() != null && petDTO.getAgeMonths() != null) {
+                        newPet.setAgeYears(Integer.valueOf(petDTO.getAgeYears()));
+                        newPet.setAgeMonths(Integer.valueOf(petDTO.getAgeMonths()));
                     }
                     newPet.setUser(user);
                     user.addPet(newPet);

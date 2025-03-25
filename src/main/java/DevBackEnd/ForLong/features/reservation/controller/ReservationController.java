@@ -1,16 +1,20 @@
 package DevBackEnd.ForLong.features.reservation.controller;
 
-import DevBackEnd.ForLong.core.entity.Reservation;
+import DevBackEnd.ForLong.common.utils.ApiResponseDTO;
 import DevBackEnd.ForLong.core.entity.ReservationStatus;
+import DevBackEnd.ForLong.features.reservation.dto.*;
 import DevBackEnd.ForLong.features.reservation.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ReservationController {
@@ -23,68 +27,106 @@ public class ReservationController {
     }
 
 
-
+    @Operation(
+            summary = "예약 생성",
+            description = "유저 ID와 병원 ID를 받아 예약을 생성합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "예약 생성 성공",
+                    content = @Content(schema = @Schema(implementation = ReservationResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @PostMapping("/api/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Map<String, Object> requestBody) {
-        Long userId = Long.parseLong(requestBody.get("userId").toString());
-        Long hospitalId = Long.parseLong(requestBody.get("hospitalId").toString());
-        LocalDateTime reservationDate = LocalDateTime.parse(requestBody.get("reservationDate").toString()); // String -> LocalDateTime 변환
-        LocalDateTime reservationTime = LocalDateTime.parse(requestBody.get("reservationTime").toString()); // String -> LocalDateTime 변환
+    public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO request) {
 
-        Reservation createdReservation = reservationService.createReservation(userId, hospitalId, reservationDate, reservationTime); // Service 메소드 호출
+        ReservationResponseDTO responseDTO = reservationService.createReservation(request);
 
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
 
     /**
-     * hospitalId 기반 예약 목록 조회 API
-     * @param hospitalId 병원 ID
-     * @return 해당 병원의 예약 목록
+     * 병원 ID 기반 예약 목록 조회 API
      */
+    @Operation(
+            summary = "병원 예약 목록 조회",
+            description = "병원 ID를 기준으로 해당 병원의 모든 예약을 조회합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = ReservationHospitalDTO.class))),
+            @ApiResponse(responseCode = "404", description = "병원 ID에 해당하는 예약 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping("/api/reservations/hospital/{hospitalId}")
-    public ResponseEntity<List<Reservation>> getReservationsByHospitalId(@PathVariable Long hospitalId) {
-        List<Reservation> reservations = reservationService.getReservationsByHospitalId(hospitalId);
+    public ResponseEntity<List<ReservationHospitalDTO>> getReservationsByHospitalId(@PathVariable Long hospitalId) {
+        List<ReservationHospitalDTO> reservations = reservationService.getReservationsByHospitalId(hospitalId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
 
     /**
-     * userId 기반 예약 목록 조회 API
-     * @param userId 유저 ID
-     * @return 해당 유저의 예약 목록
+     * 유저 ID 기반 예약 목록 조회 API
      */
+    @Operation(
+            summary = "유저 예약 목록 조회",
+            description = "유저 ID를 기준으로 해당 유저의 예약 목록을 조회합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = ReservationUserDTO.class))),
+            @ApiResponse(responseCode = "404", description = "유저 ID에 해당하는 예약 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping("/api/reservations/user/{userId}")
-    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable Long userId) {
-        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
+    public ResponseEntity<List<ReservationUserDTO>> getReservationsByUserId(@PathVariable Long userId) {
+        List<ReservationUserDTO> reservations = reservationService.getReservationsByUserId(userId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
+
 
 
     /**
      * 예약 상태 변경 API
-     * @param reservationId 예약 ID
-     * @param newStatus 변경할 예약 상태 (PENDING, APPROVED, REJECTED 중 하나)
-     * @return 성공 여부
      */
-    @PutMapping("/api/reservations/{reservationId}/status")
-    public ResponseEntity<Reservation> updateReservationStatus(
+    @Operation(
+            summary = "예약 상태 변경",
+            description = "예약 ID를 기준으로 예약 상태를 변경합니다. (PENDING, APPROVED, REJECTED)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "예약 상태 변경 성공"),
+            @ApiResponse(responseCode = "404", description = "예약 ID에 해당하는 예약 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 상태값"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<ApiResponseDTO<Long>> updateReservationStatus(
             @PathVariable Long reservationId,
-            @RequestParam("status") ReservationStatus newStatus
+            @RequestBody ReservationStatusUpdateDTO request
     ) {
-        Reservation updatedReservation = reservationService.updateReservationStatus(reservationId, newStatus);
-        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+        Long updatedReservationId = reservationService.updateReservationStatus(reservationId, request);
+        ApiResponseDTO<Long> response = new ApiResponseDTO<>("success","예약 상태 변경 성공",updatedReservationId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
     /**
      * 예약 취소 API
-     * @param reservationId 취소할 예약 ID
-     * @return 성공 여부
      */
+    @Operation(
+            summary = "예약 취소",
+            description = "예약 ID를 기준으로 예약을 취소합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "예약 취소 성공"),
+            @ApiResponse(responseCode = "404", description = "예약 ID에 해당하는 예약 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @DeleteMapping("/api/reservations/{reservationId}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<ApiResponseDTO<Void>> deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(new ApiResponseDTO<>("success", "예약 취소 성공", null));
     }
 }

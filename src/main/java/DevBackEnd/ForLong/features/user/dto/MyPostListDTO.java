@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 @Getter
 public class MyPostListDTO {
 
-    private Long postId;
-    private String loginId;
-    private String nickName;
-    private String title;
-    private String content;
-    private LocalDateTime ctDate;
+    private final Long postId;
+    private final String loginId;
+    private final String nickName;
+    private final String title;
+    private final String content;
+    private final LocalDateTime ctDate;
 
     public MyPostListDTO(Post post) {
         this.postId = post.getId();
